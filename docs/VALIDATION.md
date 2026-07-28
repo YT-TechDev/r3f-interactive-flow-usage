@@ -194,6 +194,35 @@ Owner-confirmed browser validation:
 
 Not performed by the agent: automated/headless browser interaction (no browser-automation tool was available in this session); a line-by-line itemized transcript of each checklist item (the owner's confirmation was a single blanket approval of the full checklist, not itemized per-item evidence); physical-device identification for the wheel/trackpad and touch checks (the owner's blanket approval did not specify physical mouse, physical trackpad, physical touch, or emulation, so no environment-specific claim is made here). Cross-browser and full accessibility audits remain planned validation, not executed evidence for this Issue.
 
+For lifecycle-specific material treatment (Issue #19):
+
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the resolved direct dependency is exactly `r3f-interactive-flow@2.11.0`.
+- `pnpm list @react-three/fiber three --depth 0` confirmed `@react-three/fiber@9.6.1` and `three@0.185.1`.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build (the only reported warning was Vite's generic bundle-size notice, unrelated to this change).
+- `git diff --check` reported no whitespace errors.
+- `rg "setTimeout|setInterval|requestAnimationFrame|useFrame|useFlowProgress" src/scene` and `rg "useFlowFrame|useFlow" src/scene` confirmed only the pre-existing single `useFlowFrame()` consumer and one new `useFlow<Phase>()` call exist in `src/scene`, with no timer, `useFrame()`, or `useFlowProgress()` usage introduced.
+- `git diff --name-only origin/main...HEAD` confirmed changes are limited to `src/scene/lifecycleVisuals.ts` (new), `src/scene/FlowCore.tsx`, and `src/scene/SceneStage.tsx`; `PHASE_VISUALS`, geometry transforms, camera, lighting, input configuration, `package.json`, and `pnpm-lock.yaml` are unchanged.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server at `http://127.0.0.1:5173/`. The implementing agent had no browser-automation tool available in this session, so before any interactive claim, the served page and the transformed `src/scene/FlowCore.tsx` module were fetched over HTTP and confirmed to contain the expected wiring: `useFlow` and `useFlowFrame` imported from the package root, a `lifecycle` value resolved with `Locked → Transition → Cooldown → Ready` priority, and the four `meshStandardMaterial` components bound to `materials.coreColor` / `materials.ringColor` / `materials.nodeColor`. This confirms served source content only, not interactive behavior. The dev server was then stopped cleanly.
+
+Owner-confirmed browser validation (itemized, not a blanket approval):
+
+- Ready uses the intended mint / graphite / neutral palette.
+- Transition switches immediately to the cyan/mint palette after accepted navigation.
+- The existing geometry morph continues correctly during Transition.
+- Geometry reaches the exact target state before provider cooldown begins.
+- Cooldown switches immediately to the restrained amber palette.
+- Geometry remains fully static throughout provider cooldown.
+- Locked uses the muted-red palette and overrides the other lifecycle colors.
+- Lock and provider cooldown remain independent: Locked red overrides Cooldown amber; cooldown continues to expire while Locked; Unlock after cooldown expiry returns directly to Ready; Unlock before cooldown expiry returns to Cooldown until the actual expiry.
+- No material fade, pulse, flashing, independent animation, geometry drift, or additional settling was observed.
+- The lifecycle material states are visually clear and restrained; no focused color correction was requested.
+- Supplied screenshots corroborated the Ready and Cooldown palettes and the mobile-emulation presentation.
+
+Not performed or not confirmed: specific viewport dimensions (1440 × 900 / 768 × 1024 / 320 × 568) were not individually itemized by the owner for this Issue beyond the general mobile-emulation screenshot evidence noted above; wheel/touch/keyboard input-regression, DOM control, direct/reverse navigation, and phase-shape regression were not re-confirmed in this round; presence or absence of browser console errors was not stated; cross-browser and full accessibility (including reduced-motion-specific lifecycle legibility) audits remain planned validation, not executed evidence for this Issue.
+
 ## Reporting a library defect
 
 Before reporting a library defect, reduce it to the public package surface and determine whether it reproduces independently of Phase Field.
