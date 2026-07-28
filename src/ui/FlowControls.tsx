@@ -12,7 +12,7 @@ export default function FlowControls() {
 
   return (
     <section className="flow-controls" aria-label="Flow controls">
-      <div className="flow-controls__row">
+      <div className="flow-controls__row flow-controls__row--primary">
         <button type="button" onClick={() => prev()} disabled={previousDisabled}>
           Previous
         </button>
@@ -21,28 +21,35 @@ export default function FlowControls() {
         </button>
         <button
           type="button"
+          className="lock-toggle"
           onClick={() => (isLocked ? unlock() : lock())}
           aria-pressed={isLocked}
         >
           {isLocked ? "Unlock" : "Lock"}
         </button>
       </div>
-      <div className="flow-controls__row flow-controls__row--targets">
-        {PHASES.map((target) => {
+
+      <ol className="phase-rail" aria-label="Phase sequence">
+        {PHASES.map((target, index) => {
           const targetDisabled = navigationBlocked || target === phase;
+          const isCurrent = target === phase;
           return (
-            <button
-              key={target}
-              type="button"
-              onClick={() => goTo(target)}
-              disabled={targetDisabled}
-              aria-current={target === phase ? "step" : undefined}
-            >
-              {target}
-            </button>
+            <li key={target} className="phase-rail__item">
+              <button
+                type="button"
+                className="phase-rail__button"
+                onClick={() => goTo(target)}
+                disabled={targetDisabled}
+                aria-current={isCurrent ? "step" : undefined}
+              >
+                <span className="phase-rail__index">{String(index + 1).padStart(2, "0")}</span>
+                <span className="phase-rail__name">{target}</span>
+                {isCurrent ? <span className="phase-rail__status">current</span> : null}
+              </button>
+            </li>
           );
         })}
-      </div>
+      </ol>
     </section>
   );
 }

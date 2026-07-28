@@ -9,33 +9,45 @@ export default function FlowInspector() {
 
   return (
     <section className="flow-inspector" aria-label="Flow inspector">
-      <h2>Flow state</h2>
-      <dl>
+      <h2 className="flow-inspector__title">Flow state</h2>
+      <dl className="flow-inspector__grid">
         <dt>Phase</dt>
-        <dd>{phase}</dd>
+        <dd className="mono">{phase}</dd>
 
         <dt>Phase position</dt>
-        <dd>
-          {phaseIndex + 1} of {PHASES.length}
+        <dd className="mono">
+          {phaseIndex + 1} / {PHASES.length}
         </dd>
 
         <dt>Direction</dt>
-        <dd>{direction}</dd>
+        <dd className="mono">{direction}</dd>
 
         <dt>Progress</dt>
-        <dd>
+        <dd className="flow-inspector__progress">
           <progress max={1} value={progress} aria-label="Flow transition progress" />
-          <span>{progressPercent}%</span>
+          <span className="mono">{progressPercent}%</span>
         </dd>
 
         <dt>Transitioning</dt>
-        <dd>{String(isTransitioning)}</dd>
+        <dd
+          className="mono flow-inspector__flag flow-inspector__flag--transition"
+          data-active={isTransitioning}
+        >
+          {String(isTransitioning)}
+        </dd>
 
         <dt>Cooling down</dt>
-        <dd>{String(isCoolingDown)}</dd>
+        <dd
+          className="mono flow-inspector__flag flow-inspector__flag--cooldown"
+          data-active={isCoolingDown}
+        >
+          {String(isCoolingDown)}
+        </dd>
 
         <dt>Locked</dt>
-        <dd>{String(isLocked)}</dd>
+        <dd className="mono flow-inspector__flag flow-inspector__flag--lock" data-active={isLocked}>
+          {String(isLocked)}
+        </dd>
       </dl>
     </section>
   );
