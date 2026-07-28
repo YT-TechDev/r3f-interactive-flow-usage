@@ -31,7 +31,16 @@ Input → navigation request → transition → provider cooldown → ready
 
 ## Development commands
 
-Install, development, lint, typecheck, and build commands are planned. No application scripts exist yet, so this document intentionally does not present runnable commands or claim that the application runs. The expected checks and the distinction between planned and executed work are recorded in [`docs/VALIDATION.md`](docs/VALIDATION.md).
+```bash
+pnpm install
+pnpm dev
+pnpm build
+pnpm preview
+pnpm lint
+pnpm typecheck
+```
+
+The expected checks and the distinction between planned and executed work are recorded in [`docs/VALIDATION.md`](docs/VALIDATION.md).
 
 ## Architecture
 

@@ -28,12 +28,23 @@ Input checks must also cover unavailable targets because target availability is 
 
 ## Executed validation
 
-For this documentation-only change:
+For the published-package consumer foundation (Issue #5):
 
-- Inspected the final Git diff.
-- Confirmed that only `README.md`, `docs/ARCHITECTURE.md`, and `docs/VALIDATION.md` changed.
+- `pnpm install` completed successfully and resolved `r3f-interactive-flow@2.11.0` from the public npm registry (integrity-hash-backed entry in `pnpm-lock.yaml`, no workspace, local-path, Git, or tarball source).
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the direct dependency is exactly `2.11.0`.
+- `pnpm peers check` reported no unmet peer dependencies.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build.
+- `git diff --check` reported no whitespace errors.
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server; an HTTP request to the served page and its transformed `src/app/App.tsx` module confirmed the literal strings `Phase Field` and `Predictable flow for interactive 3D.` are present in the served source. The dev server was then stopped.
 
-No application exists yet. Install, dev server, lint, typecheck, build, package resolution, interaction, layout, accessibility, and deployment checks were not run.
+Not performed: actual in-browser visual inspection (no browser was opened; verification was limited to HTTP responses and served source content), interaction, responsive-layout, accessibility, and production-deployment checks. These remain planned validation, not executed evidence.
+
+### Toolchain note: `pnpm-workspace.yaml`
+
+`pnpm-workspace.yaml` was added outside the Issue's listed file scope. It is required because pnpm's supply-chain `minimumReleaseAge` policy otherwise refuses to install `r3f-interactive-flow@2.11.0`, which was published shortly before this work. The file excludes only that one package/version from the policy; it does not disable the policy generally. This deviation was confirmed with the repository owner before proceeding.
 
 ## Reporting a library defect
 
