@@ -1,12 +1,9 @@
 import { useRef } from "react";
 import type { Mesh } from "three";
-import { useFlowFrame } from "r3f-interactive-flow";
+import { useFlow, useFlowFrame } from "r3f-interactive-flow";
 import type { Phase } from "../flow/phases";
 import { PHASE_VISUALS, type PhaseVisualState } from "./phaseVisuals";
-
-const CORE_COLOR = "#5eead4";
-const RING_COLOR = "#3a3a45";
-const NODE_COLOR = "#9a9aa6";
+import { FLOW_LIFECYCLE_VISUALS, type FlowLifecycleVisualState } from "./lifecycleVisuals";
 
 type MutableVector3 = [number, number, number];
 type MutableNodePositions = [
@@ -106,6 +103,16 @@ const applyLerp = (
 };
 
 export default function FlowCore() {
+  const { isTransitioning, isCoolingDown, isLocked } = useFlow<Phase>();
+  const lifecycle: FlowLifecycleVisualState = isLocked
+    ? "locked"
+    : isTransitioning
+      ? "transition"
+      : isCoolingDown
+        ? "cooldown"
+        : "ready";
+  const materials = FLOW_LIFECYCLE_VISUALS[lifecycle];
+
   const coreRef = useRef<Mesh>(null);
   const primaryRingRef = useRef<Mesh>(null);
   const secondaryRingRef = useRef<Mesh>(null);
@@ -171,7 +178,7 @@ export default function FlowCore() {
         rotation={[origin.coreRotation[0], origin.coreRotation[1], origin.coreRotation[2]]}
       >
         <icosahedronGeometry args={[1.3, 0]} />
-        <meshStandardMaterial color={CORE_COLOR} roughness={0.35} metalness={0.1} />
+        <meshStandardMaterial color={materials.coreColor} roughness={0.35} metalness={0.1} />
       </mesh>
       <mesh
         ref={primaryRingRef}
@@ -183,7 +190,7 @@ export default function FlowCore() {
         ]}
       >
         <torusGeometry args={[2.1, 0.025, 16, 64]} />
-        <meshStandardMaterial color={RING_COLOR} roughness={0.5} metalness={0.15} />
+        <meshStandardMaterial color={materials.ringColor} roughness={0.5} metalness={0.15} />
       </mesh>
       <mesh
         ref={secondaryRingRef}
@@ -195,7 +202,7 @@ export default function FlowCore() {
         ]}
       >
         <torusGeometry args={[2.1, 0.02, 16, 64]} />
-        <meshStandardMaterial color={RING_COLOR} roughness={0.5} metalness={0.15} />
+        <meshStandardMaterial color={materials.ringColor} roughness={0.5} metalness={0.15} />
       </mesh>
       {origin.nodePositions.map((position, index) => (
         <mesh
@@ -207,7 +214,7 @@ export default function FlowCore() {
           scale={origin.nodeScale}
         >
           <icosahedronGeometry args={[1, 0]} />
-          <meshStandardMaterial color={NODE_COLOR} roughness={0.45} metalness={0.1} />
+          <meshStandardMaterial color={materials.nodeColor} roughness={0.45} metalness={0.1} />
         </mesh>
       ))}
     </group>
