@@ -176,6 +176,24 @@ Not performed by the agent: automated/headless browser interaction (no browser-a
 
 `pnpm-workspace.yaml` was added outside the Issue's listed file scope. It is required because pnpm's supply-chain `minimumReleaseAge` policy otherwise refuses to install `r3f-interactive-flow@2.11.0`, which was published shortly before this work. The file excludes only that one package/version from the policy; it does not disable the policy generally. This deviation was confirmed with the repository owner before proceeding.
 
+For the flow input layer (Issue #17):
+
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the resolved direct dependency is exactly `r3f-interactive-flow@2.11.0`.
+- `pnpm list @react-three/fiber three --depth 0` confirmed `@react-three/fiber@9.6.1` and `three@0.185.1`.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build (the only reported warning was Vite's generic bundle-size notice, unrelated to this change).
+- `git diff --check` reported no whitespace errors.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server at `http://127.0.0.1:5173/`. The implementing agent had no browser-automation tool available in this session, so before any interactive claim, the served page and the transformed `src/app/App.tsx`, `src/input/FlowInputLayer.tsx`, and `src/ui/InputPanel.tsx` modules were fetched over HTTP and confirmed to contain the expected wiring: `App.tsx` renders `FlowInputLayer` wrapping `SceneStage` followed by `InputPanel` and `FlowControls`; `FlowInputLayer.tsx` calls `useWheelInput`, `useTouchInput`, and `useKeyboardInput` from the package root with `threshold: 40` / `threshold: 50` and `preventDefault: true`; `InputPanel.tsx` renders the `Wheel`, `Touch`, `Keyboard`, and `Gate` labels. This confirms served source content only, not interactive behavior.
+- The agent then presented the repository owner with the full Issue #17 browser-validation checklist (wheel/trackpad behavior at the scene surface and its boundaries, touch swipe behavior and multi-touch rejection, keyboard `ArrowRight`/`ArrowLeft` navigation and typing/focus protection, input-panel binding text and gate/availability reporting, and runtime/scene regression) and asked the owner to inspect it directly in a browser.
+
+Owner-confirmed browser validation:
+
+- The repository owner reviewed the presented Issue #17 checklist in a browser and gave a single blanket confirmation ("all good") covering every item on it, rather than a line-by-line itemized response. No corrections or focused follow-up issues were requested for wheel, touch, keyboard, input-panel, or runtime-regression behavior.
+
+Not performed by the agent: automated/headless browser interaction (no browser-automation tool was available in this session); a line-by-line itemized transcript of each checklist item (the owner's confirmation was a single blanket approval of the full checklist, not itemized per-item evidence); physical-device identification for the wheel/trackpad and touch checks (the owner's blanket approval did not specify physical mouse, physical trackpad, physical touch, or emulation, so no environment-specific claim is made here). Cross-browser and full accessibility audits remain planned validation, not executed evidence for this Issue.
+
 ## Reporting a library defect
 
 Before reporting a library defect, reduce it to the public package surface and determine whether it reproduces independently of Phase Field.
