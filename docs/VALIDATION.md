@@ -151,6 +151,27 @@ The repository owner approved the static Canvas and scene visual direction. The 
 
 Not performed by the agent: automated/headless browser interaction (no browser-automation tool was available in this session). All visual, responsive, and runtime-regression observations above were performed and confirmed by the repository owner, not the implementing agent. Cross-browser and full accessibility (for example, screen-reader) audits remain planned validation, not executed evidence for this Issue.
 
+For driving the Flow Core through phases (Issue #15):
+
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the resolved direct dependency is exactly `r3f-interactive-flow@2.11.0`.
+- `pnpm list @react-three/fiber three --depth 0` confirmed `@react-three/fiber@9.6.1` and `three@0.185.1`.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build (the only reported warning was Vite's generic bundle-size notice, unrelated to this change).
+- `git diff --check` reported no whitespace errors.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server at `http://127.0.0.1:5173/`. The implementing agent had no browser-automation tool available in this session, so the agent presented the repository owner with an explicit checklist (initial `origin` state and first-frame stability; `origin → expand → align → focus → resolve` navigation with visually distinct settled states; direct non-adjacent navigation from `origin` to `resolve` as one continuous morph; reverse navigation from `resolve` to `focus`; geometry remaining static under manual lock; responsive behavior and refresh at 1440 × 900, 768 × 1024, and 320 × 568; and absence of console errors) and asked the owner to inspect it directly. The dev server was then stopped cleanly.
+
+Owner-confirmed browser visual and transition validation:
+
+- The repository owner reviewed the presented checklist in a browser and gave a single blanket confirmation ("all good") covering every item on it, rather than a line-by-line itemized response. No corrections or focused follow-up issues were requested for the five phase visual states or the transition behavior.
+
+Not performed by the agent: automated/headless browser interaction (no browser-automation tool was available in this session); a line-by-line itemized transcript of each checklist item (the owner's confirmation was a single blanket approval of the full checklist, not itemized per-item evidence). Cross-browser and full accessibility audits remain planned validation, not executed evidence for this Issue.
+
+### Toolchain note: camera distance adjustment (Issue #15)
+
+`SceneStage.tsx`'s `Canvas` camera `position` changed from `[0, 0, 5]` to `[0, 0, 6]`; `fov` (42), `near` (0.1), and `far` (100) are unchanged. The `resolve` phase's core scale (1.2×) is the widest settled core, and the `focus`/`resolve` phase nodes sit close to the core's outer surface; at the original camera distance those elements approached the vertical edge of the view frustum. Increasing the camera distance by one unit restored comfortable clearance for all five settled phases without changing `fov` or adding camera animation or controls.
+
 ### Toolchain note: `pnpm-workspace.yaml`
 
 `pnpm-workspace.yaml` was added outside the Issue's listed file scope. It is required because pnpm's supply-chain `minimumReleaseAge` policy otherwise refuses to install `r3f-interactive-flow@2.11.0`, which was published shortly before this work. The file excludes only that one package/version from the policy; it does not disable the policy generally. This deviation was confirmed with the repository owner before proceeding.
