@@ -243,6 +243,46 @@ a {
   align-items: start;
 }
 
+.workspace__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Scene stage */
+
+.scene-stage {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.scene-stage__heading {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.scene-stage__description {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  max-width: 34rem;
+}
+
+.scene-stage__canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  min-height: 220px;
+  max-height: 420px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+}
+
 /* Buttons (shared) */
 
 button {
@@ -423,6 +463,11 @@ button:focus-visible {
 
   .shell {
     padding: var(--space-md) 1rem var(--space-lg);
+  }
+
+  .scene-stage__canvas {
+    aspect-ratio: 4 / 3;
+    max-height: 320px;
   }
 }
 

@@ -2,6 +2,7 @@ import SiteHeader from "../ui/SiteHeader";
 import RuntimeSequence from "../ui/RuntimeSequence";
 import FlowControls from "../ui/FlowControls";
 import FlowInspector from "../ui/FlowInspector";
+import SceneStage from "../scene/SceneStage";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
 
         <section className="workspace" aria-label="Runtime workspace">
           <div className="workspace__controls">
+            <SceneStage />
             <FlowControls />
           </div>
           <div className="workspace__inspector">
