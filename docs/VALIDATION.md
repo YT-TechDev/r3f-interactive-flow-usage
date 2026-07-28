@@ -74,6 +74,39 @@ For the DOM flow controls and live inspector (Issue #9):
 
 Not performed: automated/headless browser interaction (the implementing agent had no direct browser-automation tool available in this session; all interactive observations above were performed and confirmed by the repository owner). Responsive-layout and full accessibility audits remain planned validation, not executed evidence for this Issue.
 
+For the Phase Field visual direction and responsive DOM shell (Issue #11):
+
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the resolved direct dependency is exactly `r3f-interactive-flow@2.11.0`.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build.
+- `git diff --check` reported no whitespace errors.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server at `http://127.0.0.1:5173/`. The implementing agent had no browser-automation tool available in this session, so all interactive and responsive observations below were performed and confirmed by the repository owner rather than by the agent.
+
+Owner-confirmed browser visual and responsive validation:
+
+- 1440 × 900: no horizontal overflow; the runtime workspace remained a readable two-column composition; header links, phase names, status text, inspector values, and footer did not clip.
+- 768 × 1024: no horizontal overflow; the workspace recomposed cleanly for the available width; controls, phase rail, inspector, and header links remained readable and operable.
+- 320 × 568: no horizontal overflow; the workspace used one logical column; phase names and status text did not clip; buttons retained usable touch targets; the inspector and progress presentation remained readable.
+- DOM and focus order: the semantic reading order was `header → hero → runtime sequence → controls → phase rail → inspector → footer`; keyboard focus stopped only on interactive elements (header links, enabled navigation/lock controls, enabled phase buttons); non-interactive hero, sequence, inspector, and footer content were not artificial tab stops; native disabled controls (current phase, unavailable boundary controls) were correctly skipped; visible focus treatment was confirmed on all focusable links and buttons.
+- Reduced motion: with `prefers-reduced-motion` set to reduce, all lifecycle and lock information remained visible and understandable, no essential state depended on animation, and runtime controls continued to function.
+- External links: GitHub (`https://github.com/YT-TechDev/r3f-interactive-flow`), npm (`https://www.npmjs.com/package/r3f-interactive-flow`), and documentation (`https://github.com/YT-TechDev/r3f-interactive-flow#readme`) links opened to the correct destinations.
+- No relevant runtime or console errors were observed.
+
+Owner-confirmed runtime regression validation (re-run from Issue #9):
+
+- Ready lifecycle presentation in the initial state; the current phase, direction, and public state inspector values displayed correctly.
+- Transition lifecycle presentation while navigation was active, with visible progress advancement and navigation gating.
+- Provider cooldown: `isCoolingDown` became `true` after transition completion, navigation remained gated during cooldown, and Ready returned once cooldown ended.
+- Direct navigation to `resolve`: one direct transition occurred, phase position became `5 / 5`, and Next and the current `resolve` target were disabled.
+- Previous from `resolve` to `focus`: the accepted target became `focus` with `direction: prev` during the transition.
+- Lock / Unlock: Lock set `isLocked` to `true`, navigation became unavailable, and manual lock received its own separate visible treatment; Unlock remained operable and restored application-owned availability.
+
+The repository owner approved the final visual direction, including the runtime workspace hierarchy and lifecycle presentation.
+
+Not performed by the agent: automated/headless browser interaction (no browser-automation tool was available in this session). All interactive, responsive, focus-order, reduced-motion, and external-link observations above were performed and confirmed by the repository owner, not the implementing agent. Cross-browser and full accessibility (for example, screen-reader) audits remain planned validation, not executed evidence for this Issue.
+
 ### Toolchain note: `pnpm-workspace.yaml`
 
 `pnpm-workspace.yaml` was added outside the Issue's listed file scope. It is required because pnpm's supply-chain `minimumReleaseAge` policy otherwise refuses to install `r3f-interactive-flow@2.11.0`, which was published shortly before this work. The file excludes only that one package/version from the policy; it does not disable the policy generally. This deviation was confirmed with the repository owner before proceeding.
