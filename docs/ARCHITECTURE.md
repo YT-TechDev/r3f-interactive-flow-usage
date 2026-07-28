@@ -8,7 +8,7 @@ Phase Field is an independent consumer of `r3f-interactive-flow@2.11.0`. The app
 
 ### Flow
 
-The flow layer owns integration with the library's public provider and hooks, translates application navigation intent into navigation requests, and exposes public flow status where application behavior needs it.
+The flow layer owns the application-owned phase tuple, `FlowProvider` configuration, transition duration, provider cooldown, easing, and flow-level composition. It translates application navigation intent into navigation requests and exposes public flow status where application behavior needs it.
 
 - Do not duplicate the library runtime.
 - Do not create a second flow runtime.
@@ -20,7 +20,9 @@ Provider cooldown and hook-local input cooldown are different concepts. Provider
 
 ### Input
 
-The input layer owns DOM event registration and converts wheel, touch, and keyboard gestures into navigation intent. DOM input stays outside Canvas components. It requests navigation through the flow boundary rather than implementing transition timing itself.
+The input layer owns wheel input, touch input, keyboard input, DOM listener configuration, input enable/disable behavior, and input acceptance feedback. It converts gestures into navigation intent and requests navigation through the flow boundary rather than implementing transition timing itself.
+
+DOM input logic stays outside Canvas-bound scene components.
 
 Input gating may combine public flow state with an application-owned manual lock:
 
@@ -31,24 +33,27 @@ const disabled =
   isLocked;
 ```
 
-This condition is an input gate, not a guarantee that navigation will succeed and not an exhaustive model of every navigation failure. In particular, target availability is application logic: the application determines whether a requested destination exists and is currently available.
+This readiness expression is an input gate, not a guarantee that navigation will succeed. It does not cover phase boundaries, same-phase `goTo()`, unknown targets, or every navigation rejection reason.
+
+Target-specific availability remains application logic based on the application-owned phase tuple, the current phase, and the current phase index.
 
 ### Scene
 
-The scene layer owns React Three Fiber Canvas content, Three.js objects, camera behavior, and render-loop animation. React Three Fiber hooks are only used inside Canvas. Per-frame values must not use React state; use refs or other render-loop-appropriate mutable values to avoid scheduling a React render every frame.
+The scene layer owns `Canvas`, Canvas-bound components, `useFlowFrame`, Three.js objects, frame-based interpolation, and scene-specific visual behavior. React Three Fiber hooks, including `useFlowFrame`, are used only inside Canvas-bound components. Values updated every frame must not use React state; use refs or other render-loop-appropriate mutable values to avoid scheduling a React render every frame.
 
 The scene consumes flow outcomes and application state but does not own DOM input or create a competing navigation lifecycle.
 
 ### UI
 
-The UI layer owns DOM presentation, navigation controls, status communication, responsive layout, and accessibility. It can display public flow status and application-owned target or lock state, but it does not inspect private library state or reproduce flow behavior.
+The UI layer owns DOM controls, phase navigation, the state inspector, lock controls, input indicators, explanatory content, and external links. DOM UI uses `useFlow()` and `useFlowProgress()` to consume documented public flow state. It can display application-owned target or lock state, but it does not inspect private library state or reproduce flow behavior.
 
 ## Dependency boundary
 
 All library usage must remain within the documented public consumer surface of `r3f-interactive-flow@2.11.0`:
 
-- Import only documented APIs from the package root.
-- Do not import package subpaths or implementation files.
+- Import only documented APIs from the `r3f-interactive-flow` package root.
+- Do not consume the library through workspace links, local paths, Git branches, or tarballs.
+- Do not import private package subpaths or implementation files.
 - Do not copy library source into the application.
 - Treat undocumented types, fields, and runtime objects as private.
 - Keep target availability and product-specific navigation rules in the application.

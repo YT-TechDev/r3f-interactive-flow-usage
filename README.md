@@ -36,3 +36,9 @@ Install, development, lint, typecheck, and build commands are planned. No applic
 ## Architecture
 
 Ownership boundaries and implementation constraints are defined in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+## Related links
+
+- [Library repository](https://github.com/YT-TechDev/r3f-interactive-flow)
+- [npm package](https://www.npmjs.com/package/r3f-interactive-flow)
+- [Library documentation](https://github.com/YT-TechDev/r3f-interactive-flow#readme)

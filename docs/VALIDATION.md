@@ -39,6 +39,8 @@ No application exists yet. Install, dev server, lint, typecheck, build, package 
 
 Before reporting a library defect, reduce it to the public package surface and determine whether it reproduces independently of Phase Field.
 
+Application-specific problems belong in this repository. An application-specific problem does not automatically justify a change to the library.
+
 ```md
 ### Package version
 r3f-interactive-flow@2.11.0
