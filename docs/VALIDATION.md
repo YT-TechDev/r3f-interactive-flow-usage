@@ -54,6 +54,26 @@ For the phase model and `FlowProvider` integration (Issue #7):
 
 Not performed: actual in-browser visual/runtime execution (no browser was opened; verification was limited to HTTP responses and served/transformed source content). Whether `FlowProvider` mounts and renders without a runtime or console error was not visually confirmed in a browser and remains planned validation, not executed evidence.
 
+For the DOM flow controls and live inspector (Issue #9):
+
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the resolved direct dependency is exactly `r3f-interactive-flow@2.11.0`.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build.
+- `git diff --check` reported no whitespace errors.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server. The repository owner performed actual interactive browser validation at `http://127.0.0.1:5173/` and confirmed every observation in the Issue #9 checklist:
+  - initial state: `phase: origin`, phase position `1 of 5`, `direction: none`, `isTransitioning`/`isCoolingDown`/`isLocked` all `false`, Previous and the current `origin` target disabled, Next enabled;
+  - clicking Next: the accepted target became `expand` immediately, `direction` became `next` during the transition, progress visibly advanced, navigation controls were disabled while transitioning;
+  - completion and provider cooldown: `isTransitioning` returned to `false` and `direction` returned to `none` at completion, `isCoolingDown` became briefly `true`, navigation stayed disabled during cooldown and became available after cooldown expired;
+  - direct navigation: from a ready non-final phase, selecting `resolve` produced one direct transition to `resolve`, and Next became disabled at the final boundary;
+  - reverse navigation: after readiness, Previous moved the target from `resolve` to `focus` with `direction: prev` during the transition;
+  - manual lock: Lock set `isLocked` to `true` and disabled all navigation controls while remaining independently operable; Unlock set `isLocked` back to `false` and restored application-owned availability;
+  - browser quality: no relevant runtime or console errors were observed, keyboard focus was visibly distinguishable on all buttons, and the inspector remained readable while progress updated.
+  The dev server was then stopped cleanly.
+
+Not performed: automated/headless browser interaction (the implementing agent had no direct browser-automation tool available in this session; all interactive observations above were performed and confirmed by the repository owner). Responsive-layout and full accessibility audits remain planned validation, not executed evidence for this Issue.
+
 ### Toolchain note: `pnpm-workspace.yaml`
 
 `pnpm-workspace.yaml` was added outside the Issue's listed file scope. It is required because pnpm's supply-chain `minimumReleaseAge` policy otherwise refuses to install `r3f-interactive-flow@2.11.0`, which was published shortly before this work. The file excludes only that one package/version from the policy; it does not disable the policy generally. This deviation was confirmed with the repository owner before proceeding.
