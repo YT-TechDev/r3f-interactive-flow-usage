@@ -107,6 +107,50 @@ The repository owner approved the final visual direction, including the runtime 
 
 Not performed by the agent: automated/headless browser interaction (no browser-automation tool was available in this session). All interactive, responsive, focus-order, reduced-motion, and external-link observations above were performed and confirmed by the repository owner, not the implementing agent. Cross-browser and full accessibility (for example, screen-reader) audits remain planned validation, not executed evidence for this Issue.
 
+For the Canvas and scene foundation (Issue #13):
+
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the resolved direct dependency is exactly `r3f-interactive-flow@2.11.0`.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build.
+- `git diff --check` reported no whitespace errors.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server at `http://127.0.0.1:5173/`. The implementing agent had no browser-automation tool available in this session, so all interactive, responsive, and visual observations below were performed and confirmed by the repository owner rather than by the agent.
+
+Owner-confirmed browser visual validation:
+
+- A real WebGL Canvas renders successfully and is not blank.
+- The Flow Core is centered and fully visible.
+- The static icosahedron and restrained outer ring establish a clear 3D scene foundation without implying phase-driven behavior.
+- The mint core and graphite secondary structure integrate with the existing Phase Field visual language.
+- The Canvas remains a bounded scene region and does not dominate the runtime surface.
+- The desktop primary column is ordered as scene stage followed by flow controls, with the inspector remaining in the secondary column.
+- The scene heading and description accurately describe the current static foundation.
+- No fake Canvas, external asset, particle system, shader, camera control, or phase-driven geometry is present.
+
+Owner-confirmed responsive and stability validation:
+
+- 1440 × 900: pass, no horizontal overflow.
+- 768 × 1024: pass, no horizontal overflow.
+- 320 × 568: pass, no horizontal overflow.
+- The narrow layout stacks scene, controls, phase rail, and inspector logically.
+- Resizing preserved the Flow Core framing without clipping.
+- Refreshing the page remounted the Canvas successfully.
+- No relevant React, R3F, Three.js, WebGL, or browser-console errors were observed.
+
+Owner-confirmed runtime regression validation (re-run with the Canvas mounted):
+
+- Next from `origin` to `expand` remained functional.
+- Transition gating and provider cooldown remained functional.
+- Direct navigation to `resolve` remained functional.
+- Previous from `resolve` to `focus` remained functional.
+- Lock and Unlock remained functional.
+- The static scene correctly remained unchanged during all flow interactions.
+
+The repository owner approved the static Canvas and scene visual direction. The dev server was then stopped cleanly.
+
+Not performed by the agent: automated/headless browser interaction (no browser-automation tool was available in this session). All visual, responsive, and runtime-regression observations above were performed and confirmed by the repository owner, not the implementing agent. Cross-browser and full accessibility (for example, screen-reader) audits remain planned validation, not executed evidence for this Issue.
+
 ### Toolchain note: `pnpm-workspace.yaml`
 
 `pnpm-workspace.yaml` was added outside the Issue's listed file scope. It is required because pnpm's supply-chain `minimumReleaseAge` policy otherwise refuses to install `r3f-interactive-flow@2.11.0`, which was published shortly before this work. The file excludes only that one package/version from the policy; it does not disable the policy generally. This deviation was confirmed with the repository owner before proceeding.
