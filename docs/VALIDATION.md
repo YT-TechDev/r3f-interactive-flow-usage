@@ -42,6 +42,18 @@ For the published-package consumer foundation (Issue #5):
 
 Not performed: actual in-browser visual inspection (no browser was opened; verification was limited to HTTP responses and served source content), interaction, responsive-layout, accessibility, and production-deployment checks. These remain planned validation, not executed evidence.
 
+For the phase model and `FlowProvider` integration (Issue #7):
+
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the resolved direct dependency is exactly `r3f-interactive-flow@2.11.0`.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build.
+- `git diff --check` reported no whitespace errors.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server; HTTP requests to the served page and its transformed `src/main.tsx`, `src/app/App.tsx`, and `src/flow/FlowRoot.tsx` modules confirmed `App` is mounted under `FlowRoot`, `FlowRoot` imports `FlowProvider` from the `r3f-interactive-flow` package root, `PHASES` is passed as the provider's phase list, `initialPhase` is `"origin"`, and the module-scope `transition` object (`duration: 900`, `cooldown: 250`, `easing: easeInOutCubic`) is passed to the `transition` prop. The literal strings `Phase Field` and `Predictable flow for interactive 3D.` remain present in the served source. The dev server was then stopped cleanly.
+
+Not performed: actual in-browser visual/runtime execution (no browser was opened; verification was limited to HTTP responses and served/transformed source content). Whether `FlowProvider` mounts and renders without a runtime or console error was not visually confirmed in a browser and remains planned validation, not executed evidence.
+
 ### Toolchain note: `pnpm-workspace.yaml`
 
 `pnpm-workspace.yaml` was added outside the Issue's listed file scope. It is required because pnpm's supply-chain `minimumReleaseAge` policy otherwise refuses to install `r3f-interactive-flow@2.11.0`, which was published shortly before this work. The file excludes only that one package/version from the policy; it does not disable the policy generally. This deviation was confirmed with the repository owner before proceeding.
