@@ -9,13 +9,28 @@ export default function SiteHeader() {
           </span>
         </div>
         <nav className="site-header__links" aria-label="Project links">
-          <a href="https://github.com/YT-TechDev/r3f-interactive-flow" target="_blank" rel="noreferrer">
+          <a
+            href="https://github.com/YT-TechDev/r3f-interactive-flow"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GitHub (opens in a new tab)"
+          >
             GitHub
           </a>
-          <a href="https://www.npmjs.com/package/r3f-interactive-flow" target="_blank" rel="noreferrer">
+          <a
+            href="https://www.npmjs.com/package/r3f-interactive-flow"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="npm (opens in a new tab)"
+          >
             npm
           </a>
-          <a href="https://github.com/YT-TechDev/r3f-interactive-flow#readme" target="_blank" rel="noreferrer">
+          <a
+            href="https://github.com/YT-TechDev/r3f-interactive-flow#readme"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Docs (opens in a new tab)"
+          >
             Docs
           </a>
         </nav>

@@ -18,8 +18,19 @@ export default function RuntimeSequence() {
 
   const activeStep: StepKey = isTransitioning ? "transition" : isCoolingDown ? "cooldown" : "ready";
 
+  const lifecycleStatus = isLocked
+    ? "Locked"
+    : isTransitioning
+      ? "Transition"
+      : isCoolingDown
+        ? "Cooldown"
+        : "Ready";
+
   return (
     <section className="runtime-sequence" aria-label="Runtime sequence">
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        Flow status: {lifecycleStatus}.
+      </p>
       <ol className="runtime-sequence__list">
         {STEPS.map((step) => {
           const isNeutral = NEUTRAL_STEPS.has(step.key);
