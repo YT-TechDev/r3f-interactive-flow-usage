@@ -9,8 +9,11 @@ import FlowInputLayer from "../input/FlowInputLayer";
 export default function App() {
   return (
     <>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
       <SiteHeader />
-      <main className="shell">
+      <main id="main-content" className="shell" tabIndex={-1}>
         <section className="hero" aria-label="Introduction">
           <p className="hero__eyebrow">r3f-interactive-flow consumer</p>
           <h1 className="hero__heading">Predictable flow for interactive 3D.</h1>

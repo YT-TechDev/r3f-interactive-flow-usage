@@ -223,6 +223,44 @@ Owner-confirmed browser validation (itemized, not a blanket approval):
 
 Not performed or not confirmed: specific viewport dimensions (1440 × 900 / 768 × 1024 / 320 × 568) were not individually itemized by the owner for this Issue beyond the general mobile-emulation screenshot evidence noted above; wheel/touch/keyboard input-regression, DOM control, direct/reverse navigation, and phase-shape regression were not re-confirmed in this round; presence or absence of browser console errors was not stated; cross-browser and full accessibility (including reduced-motion-specific lifecycle legibility) audits remain planned validation, not executed evidence for this Issue.
 
+For responsive and accessibility refinement (Issue #21):
+
+- `pnpm install --frozen-lockfile` completed successfully against the committed lockfile.
+- `pnpm list r3f-interactive-flow --depth 0` confirmed the resolved direct dependency is exactly `r3f-interactive-flow@2.11.0`.
+- `pnpm list @react-three/fiber three --depth 0` confirmed `@react-three/fiber@9.6.1` and `three@0.185.1`.
+- `pnpm lint` (`eslint .`) completed with no reported violations.
+- `pnpm typecheck` (`tsc -b`, independent of `vite build`) completed with no errors.
+- `pnpm build` produced a clean Vite production build (the only reported warning was Vite's generic bundle-size notice, unrelated to this change).
+- `git diff --check` reported no whitespace errors.
+- `rg "setTimeout|setInterval|requestAnimationFrame|useEffect|useState" src/app/App.tsx src/ui/SiteHeader.tsx src/ui/RuntimeSequence.tsx` reported no matches, confirming no timer, effect, or local React state was introduced in the changed DOM files.
+- `rg "aria-live|role=\"status\"|sr-only|skip-link" src` confirmed exactly one lifecycle live-status region (`src/ui/RuntimeSequence.tsx`), one skip link (`src/app/App.tsx`), and the corresponding `.sr-only`/`.skip-link` CSS utilities (`src/styles/global.css`), with no duplicate live region elsewhere.
+- `git diff --name-only origin/main...HEAD` confirmed changes are limited to `src/app/App.tsx`, `src/ui/SiteHeader.tsx`, `src/ui/RuntimeSequence.tsx`, `src/styles/global.css`, and this file; `src/flow/`, `src/input/`, `src/scene/`, `src/ui/FlowControls.tsx`, `src/ui/FlowInspector.tsx`, `src/ui/InputPanel.tsx`, `package.json`, and `pnpm-lock.yaml` are unchanged.
+- `pnpm dev --host 127.0.0.1` started the Vite dev server (bound to `127.0.0.1:5174` because a separate process already held `5173`). The implementing agent had no browser-automation tool available in this session, so before any interactive claim, the served page and the transformed `src/app/App.tsx`, `src/ui/SiteHeader.tsx`, and `src/ui/RuntimeSequence.tsx` modules were fetched over HTTP and confirmed to contain the expected wiring: the skip link as the first child targeting `#main-content`, `<main id="main-content" tabIndex={-1}>`, `aria-label` values communicating new-tab behavior on the GitHub/npm/Docs links, and the single `role="status" aria-live="polite" aria-atomic="true"` element deriving `Flow status: {lifecycleStatus}.` from the `Locked → Transition → Cooldown → Ready` priority. This confirms served source content only, not interactive behavior.
+
+Owner-confirmed browser validation (itemized):
+
+- The skip link is the first visible keyboard-focus target and becomes clearly visible when focused.
+- Activating the skip link targets `#main-content`.
+- Keyboard focus treatment is clearly visible throughout.
+- The external GitHub, npm, and Docs links retain their visible labels, destinations, and new-tab behavior, and their accessible names include the new-tab result.
+- The inspected desktop, tablet, and mobile-emulation layouts showed no blocking horizontal overflow or unreadably compressed `InputPanel` content.
+- Flow Core, inspector, runtime sequence, controls, phase rail, and input panel remain readable and operable in the inspected layouts.
+- Previous, Next, direct phase navigation, Lock/Unlock, keyboard input, and Chrome touch emulation remain functionally correct.
+- Transition, provider cooldown, Ready, and lifecycle material behavior remain correct.
+- Touch navigation remains accepted at the expected threshold, and provider cooldown continues to gate repeated navigation correctly.
+- No blocking runtime exception or broken application behavior was observed.
+
+Accessibility evidence boundary: DOM/source and accessible-name semantics were inspected; audible screen-reader announcement behavior was not tested. This is not a screen-reader or WCAG certification claim.
+
+Console observations (recorded honestly, not omitted):
+
+- Chrome DevTools responsive touch emulation repeatedly emitted: `[Intervention] Ignored attempt to cancel a touchmove event with cancelable=false, for example because scrolling is in progress and cannot be interrupted.` The intervention count increased during emulated swipe interaction. Despite the intervention, phase navigation, provider cooldown gating, and gesture behavior remained correct. This validation used Chrome DevTools touch emulation on desktop; physical touch-device behavior was not tested.
+- A `THREE.Clock` deprecation warning was also observed. Scene and dependency files are unchanged in Issue #21, and this warning is not addressed in this scope. The input hook configuration, custom listeners, package code, and dependencies were not modified to suppress either warning.
+
+The browser console was **not** clean; both warnings above were present and are recorded rather than suppressed or omitted.
+
+Not performed or not confirmed: automated/headless browser interaction (no browser-automation tool was available in this session; all interactive observations above were performed and confirmed by the repository owner); audible screen-reader announcement testing; physical touch-device testing; cross-browser and full accessibility (for example, screen-reader or WCAG conformance) audits remain planned validation, not executed evidence for this Issue.
+
 ## Reporting a library defect
 
 Before reporting a library defect, reduce it to the public package surface and determine whether it reproduces independently of Phase Field.
